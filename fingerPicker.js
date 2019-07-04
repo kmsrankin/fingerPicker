@@ -34,7 +34,7 @@ let writeTablatureArray = (
         if (Math.random() >= 0.5) {
           tablature[index].push("-0-")
         } else {
-          tablature[index].push("-}-")
+          tablature[index].push("-=-")
         }
       } else {
         tablature[index].push("---")
@@ -50,6 +50,18 @@ let logTablature = (tablatureArray) => {
   })
 }
 
-let measureLength = Math.floor(Math.random() * 6) + 3
-logTablature(writeTablatureArray(3, measureLength))
-logTablature(writeTablatureArray(3,measureLength))
+let standardGuitar = (measureLength = Math.floor(Math.random() * 6) + 3) => {
+  logTablature(writeTablatureArray(3, measureLength))
+  logTablature(writeTablatureArray(3,measureLength))
+}
+
+let ukulele = (measureLength = Math.floor(Math.random() * 6) + 3) => {
+  logTablature(writeTablatureArray(1, measureLength))
+  logTablature(writeTablatureArray(1, measureLength))
+  logTablature(writeTablatureArray(2, measureLength))
+}
+
+module.exports = {
+  standardGuitar,
+  ukulele
+}
