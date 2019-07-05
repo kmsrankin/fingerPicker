@@ -5,9 +5,12 @@ I aim to build this into a web interface and perhaps add some more flexible feat
 
 ## How to use this app
 
+<!-- make sure to tell individuals to have node installed! -->
+
 -the following commands randomly generate tabs for their respective instrument
 - guitar: run `$node -e 'require("./fingerPicker").standardGuitar()'`
 - ukulele: run `$node -e 'require("./fingerPicker").ukulele()'`
+<!-- ideally, we should configure a main.js file that will automatically require these files so that users dont need this really long command -->
 - pick up your instrument and read the tabs
 - play it over your favorite chord progressions
 - string plucks are denoted by `-0-`

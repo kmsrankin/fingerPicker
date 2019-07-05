@@ -1,3 +1,9 @@
+// Code Organization
+// I would suggest making a `main.js` file that both configures your app and reveals the command line methods you want to use
+// You may want to look at some command line npm apps to better configure this app
+// There should be at least one TabGenerator class (though you may end up with more) that stores these methods, and holds state
+
+
 let pluckedStringNumbersArray = (
   numberOfStrings = 6,
   measureLength = Math.floor(Math.random() * 6) + 3
@@ -11,6 +17,9 @@ let pluckedStringNumbersArray = (
   }
   return sequence
 }
+// this should ideally be a function that takes in a number of strings as an argument
+// measureLength should be its own private method
+// line 8 might be able to be made into a small method
 
 let arrayOfStringPatternArrays = (numberOfStrings = 6) => {
   let stringCounter = 0
@@ -43,7 +52,7 @@ let writeTablatureArray = (
   })
   return tablature
 }
-
+// you might consider adding a random number generator library that doesnt return a number between 0 and 1, or making your own custom random number generator
 let logTablature = (tablatureArray) => {
   tablatureArray.forEach(stringPattern => {
     console.log(stringPattern.join("") + "|" + stringPattern.join("") +"|")
@@ -60,6 +69,9 @@ let ukulele = (measureLength = Math.floor(Math.random() * 6) + 3) => {
   logTablature(writeTablatureArray(1, measureLength))
   logTablature(writeTablatureArray(2, measureLength))
 }
+// is there a way we could make one DRY method, that takes in parameters such that it can run for both guitar or uke?
+
+
 
 module.exports = {
   standardGuitar,
