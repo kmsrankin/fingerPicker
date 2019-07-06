@@ -51,15 +51,40 @@ class TablatureGenerator {
     return partialTablatureString
   }
 
-  randomNumberGenerator() {
+  randomMeasureLength() {
     return Math.floor(Math.random() * 14) + 3
   }
 
-  generate(measureLength = this.randomNumberGenerator()) {
-    let completeTablatureString = ''
+  completeActiveStringsArray(measureLength) {
+    let tablatureArray = []
     this.instrument.dependentStringSetsArray.forEach(stringSetCount => {
-      completeTablatureString += this.stringifyTablatureChunk(this.writeTablatureArray(stringSetCount, measureLength))
+      tablatureArray = tablatureArray
+        .concat(this.writeTablatureArray(stringSetCount, measureLength))
     })
+    return tablatureArray
+  }
+
+  spliceEmptyStrings(tablatureArray, measureLength) {
+    let emptyStringArray = []
+    let counter = 0
+    while (counter < measureLength) {
+      emptyStringArray.push("---")
+      counter += 1
+    }
+    this.instrument.emptyStringsArray.forEach(string => {
+      let stringIndex = string - 1
+      tablatureArray.splice(stringIndex, 0, emptyStringArray)
+    })
+    return tablatureArray
+  }
+
+  generate(measureLength = this.randomMeasureLength()) {
+    let completeTablatureString = ''
+    let completeStringsArray = this.completeActiveStringsArray(measureLength)
+    if (this.instrument.emptyStringsArray){
+      completeStringsArray = this.spliceEmptyStrings(completeStringsArray, measureLength)
+    }
+    completeTablatureString = this.stringifyTablatureChunk(completeStringsArray)
     return completeTablatureString
   }
 }
