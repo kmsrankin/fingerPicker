@@ -3,7 +3,11 @@ class TablatureGenerator {
     this.instrument = instrument;
   }
 
-  pluckedStringNumbersArray(numberOfControlledStrings, measureLength) {
+  randomMeasureLength() {
+    return Math.floor(Math.random() * 14) + 3
+  }
+
+  arrOfRandStringNumbers(numberOfControlledStrings, measureLength) {
     let sequence = []
     let counter = 0
     while (counter < measureLength) {
@@ -14,7 +18,7 @@ class TablatureGenerator {
     return sequence
   }
 
-  arrayOfStringPatternArrays(numberOfControlledStrings) {
+  empty2DTablatureArr(numberOfControlledStrings) {
     let stringCounter = 0
     let stringsArray = []
     while (stringCounter < numberOfControlledStrings) {
@@ -24,9 +28,9 @@ class TablatureGenerator {
     return stringsArray
   }
 
-  writeTablatureArray(numberOfControlledStrings, measureLength){
-    let tablatureArray = this.arrayOfStringPatternArrays(numberOfControlledStrings)
-    let randomlyPluckedStringsArray = this.pluckedStringNumbersArray(numberOfControlledStrings, measureLength)
+  fill2DTablatureArr(numberOfControlledStrings, measureLength){
+    let tablatureArray = this.empty2DTablatureArr(numberOfControlledStrings)
+    let randomlyPluckedStringsArray = this.arrOfRandStringNumbers(numberOfControlledStrings, measureLength)
     randomlyPluckedStringsArray.forEach((pluckedStringNumber) => {
       tablatureArray.forEach((string, index) => {
         if (pluckedStringNumber - 1 === index) {
@@ -43,7 +47,30 @@ class TablatureGenerator {
     return tablatureArray
   }
 
-  stringifyTablatureChunk(tablatureArray) {
+  build2DArrOfActiveStringTabs(measureLength) {
+    let tablatureArray = []
+    this.instrument.arrOfStringSetCounts.forEach(stringSetCount => {
+      tablatureArray = tablatureArray
+      .concat(this.fill2DTablatureArr(stringSetCount, measureLength))
+    })
+    return tablatureArray
+  }
+
+  spliceEmptyTabLines(tablatureArray, measureLength) {
+    let emptyStringArray = []
+    let counter = 0
+    while (counter < measureLength) {
+      emptyStringArray.push("---")
+      counter += 1
+    }
+    this.instrument.stdEmptyTabLines.forEach(string => {
+      let stringIndex = string - 1
+      tablatureArray.splice(stringIndex, 0, emptyStringArray)
+    })
+    return tablatureArray
+  }
+
+  stringifyTablature(tablatureArray) {
     let partialTablatureString = ''
     tablatureArray.forEach(stringPattern => {
       partialTablatureString += stringPattern.join("") + "|" + stringPattern.join("") + "|\n"
@@ -51,40 +78,12 @@ class TablatureGenerator {
     return partialTablatureString
   }
 
-  randomMeasureLength() {
-    return Math.floor(Math.random() * 14) + 3
-  }
-
-  completeActiveStringsArray(measureLength) {
-    let tablatureArray = []
-    this.instrument.dependentStringSetsArray.forEach(stringSetCount => {
-      tablatureArray = tablatureArray
-        .concat(this.writeTablatureArray(stringSetCount, measureLength))
-    })
-    return tablatureArray
-  }
-
-  spliceEmptyStrings(tablatureArray, measureLength) {
-    let emptyStringArray = []
-    let counter = 0
-    while (counter < measureLength) {
-      emptyStringArray.push("---")
-      counter += 1
-    }
-    this.instrument.emptyStringsArray.forEach(string => {
-      let stringIndex = string - 1
-      tablatureArray.splice(stringIndex, 0, emptyStringArray)
-    })
-    return tablatureArray
-  }
-
   generate(measureLength = this.randomMeasureLength()) {
-    let completeTablatureString = ''
-    let completeStringsArray = this.completeActiveStringsArray(measureLength)
-    if (this.instrument.emptyStringsArray){
-      completeStringsArray = this.spliceEmptyStrings(completeStringsArray, measureLength)
+    let completeStringsArray = this.build2DArrOfActiveStringTabs(measureLength)
+    if (this.instrument.stdEmptyTabLines){
+      completeStringsArray = this.spliceEmptyTabLines(completeStringsArray, measureLength)
     }
-    completeTablatureString = this.stringifyTablatureChunk(completeStringsArray)
+    let completeTablatureString = this.stringifyTablature(completeStringsArray)
     return completeTablatureString
   }
 }
