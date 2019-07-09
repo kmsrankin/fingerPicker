@@ -1,28 +1,21 @@
 const TablatureGenerator =  require('./TablatureGenerator.js')
+const Instrument = require('./Instrument.js')
 
-let guitar = {
-  name: "guitar",
-  arrOfStringSetCounts: [3, 3]
-}
+let guitar = new Instrument("guitar", [3, 3])
 
-let ukelele = {
-  name: "ukelele",
-  arrOfStringSetCounts: [1, 1, 2]
-}
+let ukelele = new Instrument("ukelele", [1, 1, 2])
 
-let jazzGuitar = {
-  name: "jazz guitar",
-  arrOfStringSetCounts: [3, 1]
-}
-
+let arrOfEmptyStrings
 let lowJazzChordEmptyStringConfig = [1, 5]
 let highJazzChordEmptyStringConfig = [4, 6]
 let jazzChordRandomConfig = Math.random()
 if (jazzChordRandomConfig >= 0.5) {
-  jazzGuitar.stdEmptyTabLines = lowJazzChordEmptyStringConfig
+  arrOfEmptyStrings = lowJazzChordEmptyStringConfig
 } else {
-  jazzGuitar.stdEmptyTabLines = highJazzChordEmptyStringConfig
+  arrOfEmptyStrings = highJazzChordEmptyStringConfig
 }
+
+let jazzGuitar = new Instrument("jazz guitar", [3, 1], arrOfEmptyStrings)
 
 let logJazzGuitarTabs = (measureLength) => {
   let generator = new TablatureGenerator(jazzGuitar)

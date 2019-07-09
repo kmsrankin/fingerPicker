@@ -63,7 +63,7 @@ class TablatureGenerator {
       emptyStringArray.push("---")
       counter += 1
     }
-    this.instrument.stdEmptyTabLines.forEach(string => {
+    this.instrument.arrOfEmptyStrings.forEach(string => {
       let stringIndex = string - 1
       tablatureArray.splice(stringIndex, 0, emptyStringArray)
     })
@@ -80,7 +80,7 @@ class TablatureGenerator {
 
   generate(measureLength = this.randomMeasureLength()) {
     let completeStringsArray = this.build2DArrOfActiveStringTabs(measureLength)
-    if (this.instrument.stdEmptyTabLines){
+    if (this.instrument.arrOfEmptyStrings){
       completeStringsArray = this.spliceEmptyTabLines(completeStringsArray, measureLength)
     }
     let completeTablatureString = this.stringifyTablature(completeStringsArray)
