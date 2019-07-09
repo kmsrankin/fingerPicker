@@ -1,8 +1,8 @@
 class Instrument {
-  constructor(name, arrOfStringSetCounts, arrOfEmptyStrings = null) {
+  constructor(name, orderedArrOfStringNames, arrOfStringSets) {
     this.name = name;
-    this.arrOfStringSetCounts = arrOfStringSetCounts
-    this.arrOfEmptyStrings = arrOfEmptyStrings
+    this.orderedStringNames = orderedArrOfStringNames;
+    this.stringSets = arrOfStringSets;
   }
 }
 
