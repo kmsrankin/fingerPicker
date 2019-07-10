@@ -1,5 +1,6 @@
 const SequenceGenerator = require('./SequenceGenerator.js')
 const Instrument = require('./Instrument.js')
+const RandomNumberGenerator = require('./RandomNumberGenerator')
 
 class NewTablatureGenerator {
   constructor(instrumentConfig) {
@@ -7,32 +8,40 @@ class NewTablatureGenerator {
   }
 
   randomMeasureLength(){
-    let randomLengthGenerator = new RandomNumberGenerator
-    return randomLengthGenerator.generate(3, 16)
+    let randomLengthGenerator = new RandomNumberGenerator(3, 16)
+    return randomLengthGenerator.generate()
   }
 
   emptyTablatureObject(){
     let tablature = {}
     this.instrumentConfig.orderedStringNames.forEach(stringName => {
-      tablature[stringName] = ""
+      tablature[stringName] = `${stringName} |`
     })
-    console.log(tablature)
     return tablature
   }
 
   buildTablature(measureLength) {
     let tablature = this.emptyTablatureObject()
-    this.instrumentConfig.stringSets.forEach(set => {
-      let sequenceGenerator = new SequenceGenerator(set)
+    let sets = this.instrumentConfig.stringSets
+    console.log(sets)
+    sets.forEach(setOfStrings => {
+      let counter = 0
+      let sequenceGenerator = new SequenceGenerator(setOfStrings.strings)
       let setSequence = sequenceGenerator.newSequence(measureLength)
-      // console.log(setSequence)
-      // console.log(set)
-      // console.log(Object.keys(set))
       setSequence.forEach(stringAssignment => {
-        set.forEach(string => {
-          if (string === stringAssignment) {
-            // console.log(tablature[string])
-            tablature[string] += "-0-"
+        counter += 1
+        setOfStrings.strings.forEach(string => {
+          console.log(counter)
+          if (setOfStrings.rhythm.includes(counter)) {
+            if (string === stringAssignment) {
+              if (Math.random() >= 0.5){
+                tablature[string] += "-0-"
+              } else {
+                tablature[string] += "-=-"
+              }
+            } else {
+              tablature[string] += "---"
+            }
           } else {
             tablature[string] += "---"
           }
@@ -47,13 +56,27 @@ class NewTablatureGenerator {
     if (measureLength === null) {
       measure = this.randomMeasureLength()
     }
-    return Object.values(this.buildTablature(measure)).join("\n")
+    return Object.values(this.buildTablature(measure)).map(string => {
+      return string += "|"
+    }).join("\n")
   }
 }
 
-let guitar = new Instrument("guitar", ["e", "B", "G", "D", "A", "E"], [["E", "A", "D"], ["G", "B", "e"]])
+let guitar = new Instrument(
+  "guitar",
+  ["e", "B", "G", "D", "A", "E"],
+  [
+    {
+      strings: ["E", "A", "D"],
+      rhythm: [1, 3, 5, 7, 9, 11, 13, 15]
+    },
+    {
+      strings: ["G", "B", "e"],
+      rhythm: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]
+    }
+  ]
+)
 let guitarTabs = new NewTablatureGenerator(guitar)
-console.log(guitar)
-console.log(guitarTabs.generate(16))
+console.log(guitarTabs.generate(8))
 
 module.exports = NewTablatureGenerator

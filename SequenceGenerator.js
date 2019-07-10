@@ -1,7 +1,7 @@
 const RandomNumberGenerator = require('./RandomNumberGenerator.js')
 
 class SequenceGenerator {
-  constructor(arrOfStringNames){
+  constructor(arrOfStringNames,){
     this.arrOfStringNames = arrOfStringNames
   }
 
@@ -12,11 +12,9 @@ class SequenceGenerator {
     while (counter < measureLength) {
       let randomIndex = noteAssigner.generate()
       let nextStringName = this.arrOfStringNames[randomIndex]
-      // console.log(nextStringName)
       completeSequence.push(nextStringName)
       counter += 1
     }
-    // console.log(completeSequence)
     return completeSequence
   }
 }

@@ -1,4 +1,4 @@
-const TablatureGenerator =  require('./TablatureGenerator.js')
+const NewTablatureGenerator =  require('./NewTablatureGenerator.js')
 const Instrument = require('./Instrument.js')
 
 let guitar = new Instrument("guitar", [3, 3])
