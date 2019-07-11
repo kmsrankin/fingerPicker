@@ -7,12 +7,11 @@ I aim to build this into a web interface and continue adding some fun and experi
 
 - make sure that you have installed node on your system
 - the following commands randomly generate tabs for their respective instrument
-  - guitar: run `$ node -e 'require("./main").logGuitarTabs()'`
-  - ukelele: run `$ node -e 'require("./main").logUkeleleTabs()'`
-  - jazzGuitar: run `$ node -e 'require("./main").logJazzGuitarTabs()'`
-- you can specify the number of notes in a measure by passing the number as an argument
-  - example: run `$ node -e 'require("./main").logGuitarTabs(4)'`
-  - this example will result in a measure that is four eighth values long
+  - guitar: run `$ node -e 'require("./main").logTabs("guitar")'`
+  - ukelele: run `$ node -e 'require("./main").logTabs("ukelele")'`
+- specify the number of notes in a measure by passing the number as an argument
+  - example: run `$ node -e 'require("./main").logTabs("guitar", 5)'`
+  - this example will result in a measure that is five eighth values long
   - by default it randomly selects a number between 3 and 16 if no argument is passed
 - pick up your instrument
 - practice over your favorite chord progressions
@@ -24,7 +23,7 @@ I aim to build this into a web interface and continue adding some fun and experi
 - string plucks are denoted by `-0-`
 - rests are denoted by `-=-`
 
-## Classical Guitar Finger-Picking Basics
+## Guitar Finger-Picking Basics
 
 - pluck the lower three strings with your thumb
 - pluck the G string with your index finger
