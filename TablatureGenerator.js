@@ -1,91 +1,65 @@
+const SequenceGenerator = require('./SequenceGenerator.js')
+const Instrument = require('./Instrument.js')
+const RandomNumberGenerator = require('./RandomNumberGenerator')
+
 class TablatureGenerator {
-  constructor(instrument) {
-    this.instrument = instrument;
+  constructor(instrumentConfig) {
+    this.instrumentConfig = instrumentConfig
   }
 
-  randomMeasureLength() {
-    return Math.floor(Math.random() * 14) + 3
+  randomMeasureLength(){
+    let randomLengthGenerator = new RandomNumberGenerator(3, 16)
+    return randomLengthGenerator.generate()
   }
 
-  arrOfRandStringNumbers(numberOfControlledStrings, measureLength) {
-    let sequence = []
-    let counter = 0
-    while (counter < measureLength) {
-      let pluckedStringNumber = Math.floor(Math.random() * numberOfControlledStrings) + 1
-      sequence.push(pluckedStringNumber)
-      counter += 1
-    }
-    return sequence
+  emptyTablatureObject(){
+    let tablature = {}
+    this.instrumentConfig.orderedStringNames.forEach(stringName => {
+      tablature[stringName] = `${stringName} |`
+    })
+    return tablature
   }
 
-  empty2DTablatureArr(numberOfControlledStrings) {
-    let stringCounter = 0
-    let stringsArray = []
-    while (stringCounter < numberOfControlledStrings) {
-      stringsArray.push([])
-      stringCounter += 1
-    }
-    return stringsArray
-  }
-
-  fill2DTablatureArr(numberOfControlledStrings, measureLength){
-    let tablatureArray = this.empty2DTablatureArr(numberOfControlledStrings)
-    let randomlyPluckedStringsArray = this.arrOfRandStringNumbers(numberOfControlledStrings, measureLength)
-    randomlyPluckedStringsArray.forEach((pluckedStringNumber) => {
-      tablatureArray.forEach((string, index) => {
-        if (pluckedStringNumber - 1 === index) {
-          if (Math.random() >= 0.5) {
-            tablatureArray[index].push("-0-")
+  buildTablature(measureLength) {
+    let tablature = this.emptyTablatureObject()
+    let sets = this.instrumentConfig.stringSets
+    sets.forEach(setOfStrings => {
+      let counter = 0
+      let sequenceGenerator = new SequenceGenerator(setOfStrings.strings)
+      let setSequence = sequenceGenerator.newSequence(measureLength)
+      setSequence.forEach(stringAssignment => {
+        counter += 1
+        setOfStrings.strings.forEach(string => {
+          if (setOfStrings.rhythm.includes(counter)) {
+            if (string === stringAssignment) {
+              if (Math.random() >= setOfStrings.restChance){
+                tablature[string] += "-0-"
+              } else {
+                tablature[string] += "-=-"
+              }
+            } else {
+              tablature[string] += "---"
+            }
           } else {
-            tablatureArray[index].push("-=-")
+            tablature[string] += "---"
           }
-        } else {
-          tablatureArray[index].push("---")
-        }
+        })
       })
     })
-    return tablatureArray
+    return tablature
   }
 
-  build2DArrOfActiveStringTabs(measureLength) {
-    let tablatureArray = []
-    this.instrument.arrOfStringSetCounts.forEach(stringSetCount => {
-      tablatureArray = tablatureArray
-      .concat(this.fill2DTablatureArr(stringSetCount, measureLength))
-    })
-    return tablatureArray
-  }
-
-  spliceEmptyTabLines(tablatureArray, measureLength) {
-    let emptyStringArray = []
-    let counter = 0
-    while (counter < measureLength) {
-      emptyStringArray.push("---")
-      counter += 1
+  generate(measureLength = null) {
+    let measure = measureLength
+    if (measureLength === null) {
+      measure = this.randomMeasureLength()
     }
-    this.instrument.stdEmptyTabLines.forEach(string => {
-      let stringIndex = string - 1
-      tablatureArray.splice(stringIndex, 0, emptyStringArray)
-    })
-    return tablatureArray
-  }
-
-  stringifyTablature(tablatureArray) {
-    let partialTablatureString = ''
-    tablatureArray.forEach(stringPattern => {
-      partialTablatureString += stringPattern.join("") + "|" + stringPattern.join("") + "|\n"
-    })
-    return partialTablatureString
-  }
-
-  generate(measureLength = this.randomMeasureLength()) {
-    let completeStringsArray = this.build2DArrOfActiveStringTabs(measureLength)
-    if (this.instrument.stdEmptyTabLines){
-      completeStringsArray = this.spliceEmptyTabLines(completeStringsArray, measureLength)
-    }
-    let completeTablatureString = this.stringifyTablature(completeStringsArray)
-    return completeTablatureString
+    return Object.values(this.buildTablature(measure)).map(string => {
+      return string += "|"
+    }).join("\n")
   }
 }
+
+
 
 module.exports = TablatureGenerator
